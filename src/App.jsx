@@ -5,8 +5,15 @@ import LoadingState from './components/LoadingState';
 
 
 function App() {
+  const [articles, setArticles] = useState([]);
+  const [filteredArticles, setFilteredArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-    const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [viewMode, setViewMode] = useState('grid');
+  const [showCharts, setShowCharts] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState(null);
 
   // Initialize app
   useEffect(() => {
@@ -22,17 +29,64 @@ function App() {
     return () => clearInterval(interval);
   }, [isRefreshing]);
 
-  
+  // Filter articles based on search and category
+  useEffect(() => {
+    filterArticles();
+  }, [articles, searchTerm, selectedCategory]);
+
   const initializeApp = async () => {
     setIsLoading(true);
-    try {      
-      if (cachedArticles.length > 0) {
-        setIsLoading(false);
-      }
+    try {
+      
+
+      // Fetch fresh data
+      await refreshData();
     } catch (error) {
       console.error('Error initializing app:', error);
+      // Load mock data as fallback
+      setArticles([]);
       setIsLoading(false);
     }
+  };
+
+  const refreshData = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  const filterArticles = () => {
+    let filtered = [...articles];
+    
+    // Apply category filter
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(article => 
+        article.category?.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
+    
+
+  };
+
+  const getCategories = () => {
+    const categoryCount = {};
+    articles.forEach(article => {
+      const category = article.category || 'general';
+      categoryCount[category] = (categoryCount[category] || 0) + 1;
+    });
+    
+    return Object.entries(categoryCount)
+      .map(([value, count]) => ({
+        value,
+        label: value.charAt(0).toUpperCase() + value.slice(1),
+        count
+      }))
+      .sort((a, b) => b.count - a.count);
   };
 
   if (isLoading) {
@@ -43,7 +97,17 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         <Header 
-        isLoading={isRefreshing}
+          onRefresh={refreshData}
+          isLoading={isRefreshing}
+          lastUpdateTime={lastUpdateTime}
+        />
+
+        <SearchFilter
+          onSearch={setSearchTerm}
+          onFilter={setSelectedCategory}
+          searchTerm={searchTerm}
+          selectedCategory={selectedCategory}
+          categories={getCategories()}
         />
         {/* Footer */}
         <motion.footer
