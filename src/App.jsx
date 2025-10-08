@@ -7,6 +7,7 @@ import { ChartBar as BarChart3, Grid2x2 as Grid, List } from 'lucide-react';
 import NewsCard from './components/NewsCard';
 import { newsService } from './services/newsService';
 import { firestoreService } from './services/firestoreService';
+import { aiService } from './services/aiService';
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -39,7 +40,7 @@ function App() {
   }, [articles, searchTerm, selectedCategory]);
 
   const initializeApp = async () => {
-    setIsLoading(false);
+    setIsLoading(true);
     try {
       // Try to load cached articles first
       const cachedArticles = await firestoreService.getArticles();
@@ -66,7 +67,17 @@ function App() {
       // Fetch latest news
       const latestNews = await newsService.fetchAllNews();
       
-
+      if (latestNews.length > 0) {
+        // Enhance with AI summaries
+        const enhancedNews = await aiService.enhanceNewsWithAI(latestNews);
+        
+        // Save to Firestore
+        await firestoreService.saveArticles(enhancedNews);
+        
+        // Update state
+        setArticles(enhancedNews);
+        setLastUpdateTime(new Date());
+      }
     } catch (error) {
       console.error('Error refreshing data:', error);
     } finally {
