@@ -8,6 +8,7 @@ import NewsCard from './components/NewsCard';
 import { newsService } from './services/newsService';
 import { firestoreService } from './services/firestoreService';
 import { aiService } from './services/aiService';
+import ChartVisualization from './components/ChartVisualization';
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -172,6 +173,81 @@ function App() {
           selectedCategory={selectedCategory}
           categories={getCategories()}
         />
+
+
+        {/* View Controls */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between mb-8"
+        >
+          <div className="flex items-center space-x-2">
+            <span className="text-gray-600 font-medium">
+              {filteredArticles.length} articles found
+            </span>
+            {searchTerm && (
+              <span className="text-primary-600 text-sm">
+                for "{searchTerm}"
+              </span>
+            )}
+            {selectedCategory !== 'all' && (
+              <span className="text-secondary-600 text-sm">
+                in {selectedCategory.toUpperCase()}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setShowCharts(!showCharts)}
+              className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all ${
+                showCharts
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              <BarChart3 size={18} className="mr-2" />
+              Charts
+            </button>
+
+            <div className="flex bg-white rounded-lg p-1 shadow-md">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded-md transition-all ${
+                  viewMode === 'grid'
+                    ? 'bg-primary-600 text-white'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <Grid size={18} />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-md transition-all ${
+                  viewMode === 'list'
+                    ? 'bg-primary-600 text-white'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <List size={18} />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Charts Section */}
+        <AnimatePresence>
+          {showCharts && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-8 overflow-hidden"
+            >
+              <ChartVisualization articles={filteredArticles} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* News Grid/List */}
         <AnimatePresence mode="wait">
