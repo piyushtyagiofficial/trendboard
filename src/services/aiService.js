@@ -7,6 +7,12 @@ export class AIService {
   }
 
   async summarizeArticle(headline, content) {
+    // Check if API key is available
+    if (!this.geminiApiKey || this.geminiApiKey === 'undefined') {
+      console.log('Gemini API key not configured, using fallback summary');
+      return this.generateFallbackSummary(headline);
+    }
+
     const prompt = `Summarize this financial news article in exactly 2-3 concise lines that capture the key market impact and main points:
 
 Headline: ${headline}

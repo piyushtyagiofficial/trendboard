@@ -24,15 +24,19 @@ function App() {
   useEffect(() => {
     initializeApp();
     
-    // Set up auto-refresh every 5 minutes
+    // Set up auto-refresh every 15 minutes, but only if not recently refreshed
     const interval = setInterval(() => {
-      if (!isRefreshing) {
+      // Only refresh if not currently refreshing and enough time has passed
+      const timeSinceLastUpdate = lastUpdateTime ? Date.now() - lastUpdateTime.getTime() : Infinity;
+      const minRefreshInterval = 10 * 60 * 1000; // 10 minutes minimum between refreshes
+      
+      if (!isRefreshing && timeSinceLastUpdate > minRefreshInterval) {
         refreshData();
       }
-    }, 5 * 60 * 1000);
+    }, 15 * 60 * 1000); // Check every 15 minutes
 
     return () => clearInterval(interval);
-  }, [isRefreshing]);
+  }, [isRefreshing, lastUpdateTime]);
 
   // Filter articles based on search and category
   useEffect(() => {
@@ -48,15 +52,19 @@ function App() {
       if (cachedArticles.length > 0) {
         setArticles(cachedArticles);
         setIsLoading(false);
+        // Don't fetch fresh data immediately if we have cached articles
+        return;
       }
       
-      // Fetch fresh data
+      // Fetch fresh data only if no cached articles
       await refreshData();
     } catch (error) {
       console.error('Error initializing app:', error);
       // Load mock data as fallback
       const mockArticles = newsService.getMockNews();
       setArticles(mockArticles);
+    } finally {
+      // Ensure loading state is always resolved
       setIsLoading(false);
     }
   };
@@ -65,21 +73,40 @@ function App() {
     setIsRefreshing(true);
     try {
       // Fetch latest news
-      const latestNews = await newsService.fetchAllNews();
+      const newsResult = await newsService.fetchAllNews();
+      const latestNews = newsResult.articles;
+      const isFromCache = newsResult.fromCache;
       
       if (latestNews.length > 0) {
-        // Enhance with AI summaries
-        const enhancedNews = await aiService.enhanceNewsWithAI(latestNews);
-        
-        // Save to Firestore
-        await firestoreService.saveArticles(enhancedNews);
-        
-        // Update state
-        setArticles(enhancedNews);
+        // Only enhance with AI and save to Firestore if data is fresh (not from cache)
+        if (!isFromCache) {
+          // Enhance with AI summaries
+          const enhancedNews = await aiService.enhanceNewsWithAI(latestNews);
+          
+          // Save to Firestore
+          await firestoreService.saveArticles(enhancedNews);
+          
+          // Update state
+          setArticles(enhancedNews);
+          setLastUpdateTime(new Date());
+        } else {
+          // Just update state with cached data, don't save to Firestore again
+          setArticles(latestNews);
+          // Don't update lastUpdateTime for cached data
+        }
+      } else {
+        // If no news fetched, use mock data to ensure app isn't empty
+        console.log('No news fetched from APIs, using mock data');
+        const mockArticles = newsService.getMockNews();
+        setArticles(mockArticles);
         setLastUpdateTime(new Date());
       }
     } catch (error) {
       console.error('Error refreshing data:', error);
+      // Fallback to mock data on any error
+      const mockArticles = newsService.getMockNews();
+      setArticles(mockArticles);
+      setLastUpdateTime(new Date());
     } finally {
       setIsRefreshing(false);
     }

@@ -12,17 +12,42 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+// Check if Firebase is properly configured
+const isFirebaseConfigured = Object.values(firebaseConfig).every(value => 
+  value && value !== 'undefined' && value !== 'placeholder'
+);
 
-// Anonymous Auth
-const auth = getAuth(app);
-signInAnonymously(auth)
-  .then(() => {
-    console.log("Signed in anonymously");
-  })
-  .catch((error) => {
-    console.error("Anonymous sign-in error:", error);
-  });
+let app = null;
+let db = null;
+let isFirebaseAvailable = false;
+let authAttempted = false; // Prevent multiple auth attempts
 
+if (isFirebaseConfigured) {
+  try {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    isFirebaseAvailable = true;
+
+    // Anonymous Auth - only attempt once
+    if (!authAttempted) {
+      authAttempted = true;
+      const auth = getAuth(app);
+      signInAnonymously(auth)
+        .then(() => {
+          console.log("Signed in anonymously to Firebase");
+        })
+        .catch((error) => {
+          console.warn("Firebase anonymous sign-in failed:", error.message);
+          // Don't set isFirebaseAvailable to false here, as Firestore might still work
+        });
+    }
+  } catch (error) {
+    console.warn("Firebase initialization failed:", error.message);
+    isFirebaseAvailable = false;
+  }
+} else {
+  console.warn("Firebase not configured - missing or invalid environment variables. Running in offline mode.");
+}
+
+export { db, isFirebaseAvailable };
 export default app;

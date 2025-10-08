@@ -10,7 +10,7 @@ import {
   where,
   serverTimestamp 
 } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, isFirebaseAvailable } from '../firebase/config';
 
 export class FirestoreService {
   constructor() {
@@ -19,10 +19,16 @@ export class FirestoreService {
   }
 
   async saveArticles(articles) {
+    if (!isFirebaseAvailable || !db) {
+      console.log('Firebase not available, skipping save to Firestore');
+      return;
+    }
+
     const batch = [];
     
     for (const article of articles) {
-      const docRef = doc(db, this.newsCollection, article.id);
+      const id = String(article.id);
+      const docRef = doc(db, this.newsCollection, id);
       batch.push(
         setDoc(docRef, {
           ...article,
@@ -41,6 +47,11 @@ export class FirestoreService {
   }
 
   async getArticles(limitCount = 50) {
+    if (!isFirebaseAvailable || !db) {
+      console.log('Firebase not available, returning empty array');
+      return [];
+    }
+
     try {
       const q = query(
         collection(db, this.newsCollection),
@@ -63,6 +74,12 @@ export class FirestoreService {
   }
 
   subscribeToArticles(callback, limitCount = 50) {
+    if (!isFirebaseAvailable || !db) {
+      console.log('Firebase not available, cannot subscribe to articles');
+      callback([]);
+      return () => {}; // Return empty unsubscribe function
+    }
+
     const q = query(
       collection(db, this.newsCollection),
       orderBy('datetime', 'desc'),
@@ -77,12 +94,18 @@ export class FirestoreService {
       callback(articles);
     }, (error) => {
       console.error('Firestore subscription error:', error);
+      callback([]);
     });
 
     return unsubscribe;
   }
 
   async searchArticles(searchTerm, category = null) {
+    if (!isFirebaseAvailable || !db) {
+      console.log('Firebase not available, returning empty search results');
+      return [];
+    }
+
     try {
       let q = query(collection(db, this.newsCollection));
       
