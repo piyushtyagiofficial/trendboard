@@ -4,8 +4,9 @@ import Header from './components/Header';
 import LoadingState from './components/LoadingState';
 import SearchFilter from './components/SearchFilter';
 import { ChartBar as BarChart3, Grid2x2 as Grid, List } from 'lucide-react';
-
-
+import NewsCard from './components/NewsCard';
+import { newsService } from './services/newsService';
+import { firestoreService } from './services/firestoreService';
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -38,16 +39,23 @@ function App() {
   }, [articles, searchTerm, selectedCategory]);
 
   const initializeApp = async () => {
-    setIsLoading(true);
+    setIsLoading(false);
     try {
+      // Try to load cached articles first
+      const cachedArticles = await firestoreService.getArticles();
       
-
+      if (cachedArticles.length > 0) {
+        setArticles(cachedArticles);
+        setIsLoading(false);
+      }
+      
       // Fetch fresh data
       await refreshData();
     } catch (error) {
       console.error('Error initializing app:', error);
       // Load mock data as fallback
-      setArticles([]);
+      const mockArticles = newsService.getMockNews();
+      setArticles(mockArticles);
       setIsLoading(false);
     }
   };
@@ -55,6 +63,9 @@ function App() {
   const refreshData = useCallback(async () => {
     setIsRefreshing(true);
     try {
+      // Fetch latest news
+      const latestNews = await newsService.fetchAllNews();
+      
 
     } catch (error) {
       console.error('Error refreshing data:', error);
@@ -73,7 +84,18 @@ function App() {
       );
     }
     
-
+    // Apply search filter
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(article =>
+        article.headline?.toLowerCase().includes(term) ||
+        article.summary?.toLowerCase().includes(term) ||
+        article.source?.toLowerCase().includes(term) ||
+        article.symbols?.some(symbol => symbol.toLowerCase().includes(term))
+      );
+    }
+    
+    setFilteredArticles(filtered);
   };
 
   const getCategories = () => {
@@ -112,8 +134,8 @@ function App() {
           selectedCategory={selectedCategory}
           categories={getCategories()}
         />
-        
-                {/* News Grid/List */}
+
+        {/* News Grid/List */}
         <AnimatePresence mode="wait">
           {filteredArticles.length > 0 ? (
             <motion.div
@@ -165,7 +187,7 @@ function App() {
             </motion.div>
           )}
         </AnimatePresence>
-        
+
         {/* Footer */}
         <motion.footer
           initial={{ opacity: 0 }}
