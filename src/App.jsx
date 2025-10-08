@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
 import LoadingState from './components/LoadingState';
+import SearchFilter from './components/SearchFilter';
+import { ChartBar as BarChart3, Grid2x2 as Grid, List } from 'lucide-react';
+
 
 
 function App() {
@@ -109,6 +112,60 @@ function App() {
           selectedCategory={selectedCategory}
           categories={getCategories()}
         />
+        
+                {/* News Grid/List */}
+        <AnimatePresence mode="wait">
+          {filteredArticles.length > 0 ? (
+            <motion.div
+              key="articles-grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={
+                viewMode === 'grid'
+                  ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'
+                  : 'space-y-6'
+              }
+            >
+              {filteredArticles.map((article, index) => (
+                <NewsCard
+                  key={article.id}
+                  article={article}
+                  index={index}
+                />
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="no-results"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-16"
+            >
+              <div className="bg-white rounded-xl shadow-lg p-8 max-w-md mx-auto">
+                <div className="text-gray-400 mb-4">
+                  <BarChart3 size={64} className="mx-auto" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  No articles found
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Try adjusting your search terms or category filters.
+                </p>
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSelectedCategory('all');
+                  }}
+                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
         {/* Footer */}
         <motion.footer
           initial={{ opacity: 0 }}
