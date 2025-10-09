@@ -4,18 +4,47 @@ export class NewsService {
     this.finnhubApiKey = import.meta.env.VITE_FINNHUB_API_KEY; 
     this.eodhdApiKey = import.meta.env.VITE_EOTHD_API_KEY;
     this.lastFetchTime = null;
-    this.cache = new Map();
+    this.rateLimitDelay = 1000; // 1 second between requests
+    this.lastRequestTime = 0;
+  }
+
+  // Add delay between API requests to respect rate limits
+  async waitForRateLimit() {
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequestTime;
+    if (timeSinceLastRequest < this.rateLimitDelay) {
+      const waitTime = this.rateLimitDelay - timeSinceLastRequest;
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+    this.lastRequestTime = Date.now();
   }
 
   async fetchFinnhubNews(category = 'general') {
+    // Check if API key is available
+    if (!this.finnhubApiKey || this.finnhubApiKey === 'undefined' || this.finnhubApiKey === 'placeholder') {
+      console.log('Finnhub API key not configured, skipping Finnhub news fetch');
+      return [];
+    }
+
+    // Wait for rate limit
+    await this.waitForRateLimit();
+
     const url = `https://finnhub.io/api/v1/news?category=${category}&token=${this.finnhubApiKey}`;
     
     try {
       const response = await fetch(url);
-      if (!response.ok) throw new Error(`Finnhub API error: ${response.status}`);
+      
+      if (response.status === 429) {
+        console.warn('Finnhub rate limit hit, returning empty array');
+        return [];
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Finnhub API error: ${response.status}`);
+      }
       
       const data = await response.json();
-      return data.slice(0, 10).map(article => ({
+      const processedData = data.slice(0, 10).map(article => ({
         id: article.id || Date.now() + Math.random(),
         headline: article.headline,
         summary: article.summary || '',
@@ -27,6 +56,8 @@ export class NewsService {
         symbols: article.related ? article.related.split(',') : [],
         provider: 'finnhub'
       }));
+
+      return processedData;
     } catch (error) {
       console.error('Finnhub fetch error:', error);
       return [];
@@ -34,55 +65,15 @@ export class NewsService {
   }
 
   async fetchIPOAlerts() {
-    // Mock IPO data - replace with actual IPOAlerts API
-    const mockIPOData = [
-      {
-        id: 'ipo-1',
-        headline: 'Tech Startup XYZ Files for $500M IPO',
-        summary: 'Emerging AI company plans to go public with major institutional backing',
-        source: 'IPOAlerts',
-        url: '#',
-        image: 'https://images.pexels.com/photos/6801874/pexels-photo-6801874.jpeg?auto=compress&cs=tinysrgb&w=400',
-        category: 'ipo',
-        datetime: new Date().toISOString(),
-        symbols: ['XYZ'],
-        provider: 'ipoalerts'
-      },
-      {
-        id: 'ipo-2',
-        headline: 'Renewable Energy Firm Announces IPO Plans',
-        summary: 'Solar power company seeks $300M funding through public offering',
-        source: 'IPOAlerts',
-        url: '#',
-        image: 'https://images.pexels.com/photos/9875435/pexels-photo-9875435.jpeg?auto=compress&cs=tinysrgb&w=400',
-        category: 'ipo',
-        datetime: new Date(Date.now() - 86400000).toISOString(),
-        symbols: ['GREEN'],
-        provider: 'ipoalerts'
-      }
-    ];
-
-    return mockIPOData;
+    // IPO data would come from actual IPOAlerts API when available
+    console.log('IPO API not implemented yet');
+    return [];
   }
 
   async fetchBSENSEFilings() {
-    // Mock BSE/NSE filing data - replace with actual API
-    const mockFilingsData = [
-      {
-        id: 'filing-1',
-        headline: 'Major Bank Reports Q4 Earnings Beat',
-        summary: 'Leading financial institution exceeds analyst expectations',
-        source: 'BSE',
-        url: '#',
-        image: 'https://images.pexels.com/photos/6802049/pexels-photo-6802049.jpeg?auto=compress&cs=tinysrgb&w=400',
-        category: 'earnings',
-        datetime: new Date().toISOString(),
-        symbols: ['BANK'],
-        provider: 'bse'
-      }
-    ];
-
-    return mockFilingsData;
+    // BSE/NSE filing data would come from actual API when available
+    console.log('BSE/NSE filing API not implemented yet');
+    return [];
   }
 
   async fetchAllNews() {
@@ -103,62 +94,10 @@ export class NewsService {
       return allNews;
     } catch (error) {
       console.error('Error fetching news:', error);
-      return this.getMockNews();
+      return [];
     }
   }
 
-  getMockNews() {
-    return [
-      {
-        id: '1',
-        headline: 'Market Rally Continues as Tech Stocks Surge',
-        summary: 'Technology sector leads broader market gains amid positive earnings reports and strong investor sentiment.',
-        source: 'Financial Times',
-        url: '#',
-        image: 'https://images.pexels.com/photos/6801648/pexels-photo-6801648.jpeg?auto=compress&cs=tinysrgb&w=400',
-        category: 'market',
-        datetime: new Date().toISOString(),
-        symbols: ['TECH', 'NASDAQ'],
-        provider: 'mock'
-      },
-      {
-        id: '2',
-        headline: 'Fed Signals Potential Rate Cut in Coming Months',
-        summary: 'Federal Reserve officials hint at monetary policy adjustments as inflation shows signs of cooling.',
-        source: 'Reuters',
-        url: '#',
-        image: 'https://images.pexels.com/photos/6802042/pexels-photo-6802042.jpeg?auto=compress&cs=tinysrgb&w=400',
-        category: 'monetary',
-        datetime: new Date(Date.now() - 3600000).toISOString(),
-        symbols: ['FED'],
-        provider: 'mock'
-      },
-      {
-        id: '3',
-        headline: 'Cryptocurrency Market Sees Mixed Trading',
-        summary: 'Digital assets show varied performance with Bitcoin holding steady while altcoins experience volatility.',
-        source: 'CoinDesk',
-        url: '#',
-        image: 'https://images.pexels.com/photos/6765363/pexels-photo-6765363.jpeg?auto=compress&cs=tinysrgb&w=400',
-        category: 'crypto',
-        datetime: new Date(Date.now() - 7200000).toISOString(),
-        symbols: ['BTC', 'ETH'],
-        provider: 'mock'
-      },
-      {
-        id: '4',
-        headline: 'Oil Prices Jump on Supply Concerns',
-        summary: 'Crude oil futures rise significantly following geopolitical tensions and reduced production forecasts.',
-        source: 'Bloomberg',
-        url: '#',
-        image: 'https://images.pexels.com/photos/6801874/pexels-photo-6801874.jpeg?auto=compress&cs=tinysrgb&w=400',
-        category: 'commodities',
-        datetime: new Date(Date.now() - 10800000).toISOString(),
-        symbols: ['OIL', 'WTI'],
-        provider: 'mock'
-      }
-    ];
-  }
 }
 
 export const newsService = new NewsService();

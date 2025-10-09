@@ -61,9 +61,8 @@ function App() {
       await refreshData();
     } catch (error) {
       console.error('Error initializing app:', error);
-      // Load mock data as fallback
-      const mockArticles = newsService.getMockNews();
-      setArticles(mockArticles);
+      // No fallback to mock data - just show empty state
+      setArticles([]);
     } finally {
       // Ensure loading state is always resolved
       setIsLoading(false);
@@ -74,40 +73,27 @@ function App() {
     setIsRefreshing(true);
     try {
       // Fetch latest news
-      const newsResult = await newsService.fetchAllNews();
-      const latestNews = newsResult.articles;
-      const isFromCache = newsResult.fromCache;
+      const latestNews = await newsService.fetchAllNews();
       
       if (latestNews.length > 0) {
-        // Only enhance with AI and save to Firestore if data is fresh (not from cache)
-        if (!isFromCache) {
-          // Enhance with AI summaries
-          const enhancedNews = await aiService.enhanceNewsWithAI(latestNews);
-          
-          // Save to Firestore
-          await firestoreService.saveArticles(enhancedNews);
-          
-          // Update state
-          setArticles(enhancedNews);
-          setLastUpdateTime(new Date());
-        } else {
-          // Just update state with cached data, don't save to Firestore again
-          setArticles(latestNews);
-          // Don't update lastUpdateTime for cached data
-        }
-      } else {
-        // If no news fetched, use mock data to ensure app isn't empty
-        console.log('No news fetched from APIs, using mock data');
-        const mockArticles = newsService.getMockNews();
-        setArticles(mockArticles);
+        // Enhance with AI summaries
+        const enhancedNews = await aiService.enhanceNewsWithAI(latestNews);
+        
+        // Save to Firestore
+        await firestoreService.saveArticles(enhancedNews);
+        
+        // Update state
+        setArticles(enhancedNews);
         setLastUpdateTime(new Date());
+      } else {
+        // If no news fetched and no cached data, show empty state
+        console.log('No news data available');
+        setArticles([]);
       }
     } catch (error) {
       console.error('Error refreshing data:', error);
-      // Fallback to mock data on any error
-      const mockArticles = newsService.getMockNews();
-      setArticles(mockArticles);
-      setLastUpdateTime(new Date());
+      // No fallback - just show empty state or keep existing articles
+      console.log('Keeping existing articles due to error');
     } finally {
       setIsRefreshing(false);
     }
