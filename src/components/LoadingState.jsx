@@ -11,16 +11,16 @@ const LoadingState = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center relative overflow-hidden px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-slate-900 flex items-center justify-center relative overflow-hidden px-4">
       {/* Background Animation */}
-      <div className="absolute inset-0 opacity-30">
+      <div className="absolute inset-0 opacity-20">
         <motion.div
           animate={{
             x: [0, 100, 0],
             y: [0, -100, 0],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-10 left-10 w-3 h-3 sm:w-4 sm:h-4 bg-blue-300 rounded-full"
+          className="absolute top-10 left-10 w-3 h-3 sm:w-4 sm:h-4 bg-blue-500 rounded-full"
         />
         <motion.div
           animate={{
@@ -28,7 +28,7 @@ const LoadingState = () => {
             y: [0, 100, 0],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute top-20 right-20 w-4 h-4 sm:w-6 sm:h-6 bg-purple-300 rounded-full"
+          className="absolute top-20 right-20 w-4 h-4 sm:w-6 sm:h-6 bg-purple-500 rounded-full"
         />
         <motion.div
           animate={{
@@ -36,7 +36,7 @@ const LoadingState = () => {
             y: [0, -50, 0],
           }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-20 left-1/4 w-2 h-2 sm:w-3 sm:h-3 bg-green-300 rounded-full"
+          className="absolute bottom-20 left-1/4 w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"
         />
       </div>
 
@@ -56,7 +56,7 @@ const LoadingState = () => {
             transition={{ 
               scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
             }}
-            className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-2xl p-2 sm:p-3"
+            className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 rounded-2xl mx-auto flex items-center justify-center shadow-2xl p-2 sm:p-3 border border-gray-700"
           >
             <img 
               src={logo} 
@@ -78,7 +78,7 @@ const LoadingState = () => {
                 repeat: Infinity,
                 delay: ring * 0.4
               }}
-              className="absolute inset-0 border-2 border-blue-400 rounded-2xl"
+              className="absolute inset-0 border-2 border-blue-500 rounded-2xl"
             />
           ))}
         </motion.div>
@@ -87,7 +87,7 @@ const LoadingState = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-3"
+          className="text-3xl sm:text-4xl font-bold text-white mb-2 sm:mb-3"
         >
           Trendboard
         </motion.h1>
@@ -96,7 +96,7 @@ const LoadingState = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="text-gray-600 text-base sm:text-lg mb-6 sm:mb-8"
+          className="text-gray-300 text-base sm:text-lg mb-6 sm:mb-8"
         >
           <span className="hidden sm:inline">AI-Powered Financial Intelligence</span>
           <span className="sm:hidden">AI Financial News</span>
@@ -124,22 +124,22 @@ const LoadingState = () => {
                     repeat: Infinity,
                     delay: step.delay
                   }}
-                  className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg flex items-center justify-center"
+                  className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center"
                 >
                   <StepIcon size={14} className="text-white sm:w-4 sm:h-4" />
                 </motion.div>
-                <span className="text-gray-700 font-medium text-sm sm:text-base">{step.text}</span>
+                <span className="text-gray-300 font-medium text-sm sm:text-base">{step.text}</span>
               </motion.div>
             );
           })}
         </div>
         
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2 mb-4 sm:mb-6 overflow-hidden">
+        <div className="w-full bg-gray-700 rounded-full h-1.5 sm:h-2 mb-4 sm:mb-6 overflow-hidden">
           <motion.div
             animate={{ width: ["0%", "100%"] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+            className="h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"
           />
         </div>
 
@@ -152,9 +152,9 @@ const LoadingState = () => {
                 scale: [1, 1.5, 1],
                 opacity: [0.4, 1, 0.4],
                 backgroundColor: [
-                  "rgb(59, 130, 246)", 
-                  "rgb(139, 92, 246)", 
-                  "rgb(59, 130, 246)"
+                  "rgb(99, 102, 241)", 
+                  "rgb(168, 85, 247)", 
+                  "rgb(99, 102, 241)"
                 ]
               }}
               transition={{
@@ -171,7 +171,7 @@ const LoadingState = () => {
         <motion.p
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="mt-4 text-sm text-gray-500"
+          className="mt-4 text-sm text-gray-400"
         >
           Please wait while we prepare your dashboard...
         </motion.p>

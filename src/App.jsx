@@ -145,7 +145,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-slate-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-14 lg:pt-16 pb-4 sm:pb-6 max-w-7xl">
         <Header 
           onRefresh={refreshData}
@@ -171,14 +171,14 @@ function App() {
           className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-3 sm:gap-4"
         >
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-gray-700 font-semibold text-base sm:text-lg">
+            <span className="text-gray-300 font-semibold text-base sm:text-lg">
               {filteredArticles.length} {filteredArticles.length === 1 ? 'article' : 'articles'} found
             </span>
             {searchTerm && (
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-blue-100 text-blue-800 text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full font-medium"
+                className="bg-blue-900/50 text-blue-300 text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full font-medium border border-blue-700"
               >
                 for "{searchTerm}"
               </motion.span>
@@ -187,7 +187,7 @@ function App() {
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-purple-100 text-purple-800 text-sm px-3 py-1 rounded-full font-medium"
+                className="bg-purple-900/50 text-purple-300 text-sm px-3 py-1 rounded-full font-medium border border-purple-700"
               >
                 in {selectedCategory.toUpperCase()}
               </motion.span>
@@ -201,8 +201,8 @@ function App() {
               onClick={() => setShowCharts(!showCharts)}
               className={`flex items-center px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-medium transition-all duration-200 text-sm sm:text-base ${
                 showCharts
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg'
+                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-600'
               }`}
             >
               <BarChart3 size={16} className="mr-1.5 sm:mr-2 sm:w-[18px] sm:h-[18px]" />
@@ -210,15 +210,15 @@ function App() {
               <span className="sm:hidden">{showCharts ? 'Charts' : 'Charts'}</span>
             </motion.button>
 
-            <div className="flex bg-white rounded-xl p-1 shadow-md border border-gray-200">
+            <div className="flex bg-gray-800 rounded-xl p-1 shadow-md border border-gray-600">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setViewMode('grid')}
                 className={`p-2 sm:p-2.5 rounded-lg transition-all duration-200 ${
                   viewMode === 'grid'
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md'
+                    : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300'
                 }`}
               >
                 <Grid size={16} className="sm:w-[18px] sm:h-[18px]" />
@@ -229,8 +229,8 @@ function App() {
                 onClick={() => setViewMode('list')}
                 className={`p-2 sm:p-2.5 rounded-lg transition-all duration-200 ${
                   viewMode === 'list'
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md'
+                    : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300'
                 }`}
               >
                 <List size={16} className="sm:w-[18px] sm:h-[18px]" />
@@ -340,7 +340,7 @@ function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="mt-20 bg-white rounded-2xl shadow-lg p-8 border border-gray-100"
+          className="mt-20 bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-8 border border-gray-700"
         >
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
@@ -349,12 +349,12 @@ function App() {
                 alt="Trendboard Logo"
                 className="w-8 h-8 object-contain mr-3"
               />
-              <h3 className="text-xl font-bold text-gray-900">Trendboard</h3>
+              <h3 className="text-xl font-bold text-white">Trendboard</h3>
             </div>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-300 mb-4">
               AI-Powered Financial Intelligence • Real-time Market Analysis • Professional Insights
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-400">
               <span>© 2025 Trendboard</span>
               <span>•</span>
               <span>Powered by Advanced AI</span>

@@ -43,18 +43,22 @@ const Header = ({ onRefresh, isLoading, lastUpdateTime }) => {
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg border-b border-gray-200 backdrop-blur-sm"
+      className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm shadow-lg border-b border-gray-700"
     >
       <div className="relative px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
         <div className="flex items-center justify-between">
-          {/* Brand Section */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Brand Section - Clickable to scroll to top */}
+          <motion.div 
+            className="flex items-center space-x-2 sm:space-x-3 cursor-pointer group"
+            onClick={scrollToTop}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             <motion.img
-              whileHover={{ scale: 1.05 }}
-              onClick={scrollToTop}
+              whileHover={{ scale: 1.1, rotate: 5 }}
               src={logo} 
               alt="Trendboard Logo" 
-              className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 object-contain cursor-pointer transition-all duration-300"
+              className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 object-contain transition-all duration-300"
             />
             
             <div>
@@ -62,12 +66,12 @@ const Header = ({ onRefresh, isLoading, lastUpdateTime }) => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900"
+                className="text-lg sm:text-xl lg:text-2xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300"
               >
                 Trendboard
               </motion.h1>
             </div>
-          </div>
+          </motion.div>
 
           {/* Actions Section */}
           <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
@@ -81,12 +85,12 @@ const Header = ({ onRefresh, isLoading, lastUpdateTime }) => {
               {(() => {
                 const updateInfo = formatLastUpdate(lastUpdateTime);
                 const statusColors = {
-                  live: 'text-green-600',
-                  recent: 'text-blue-600', 
-                  normal: 'text-gray-600',
-                  old: 'text-orange-600',
-                  'very-old': 'text-red-600',
-                  offline: 'text-gray-400'
+                  live: 'text-green-400',
+                  recent: 'text-blue-400', 
+                  normal: 'text-gray-300',
+                  old: 'text-orange-400',
+                  'very-old': 'text-red-400',
+                  offline: 'text-gray-500'
                 };
                 return (
                   <>
