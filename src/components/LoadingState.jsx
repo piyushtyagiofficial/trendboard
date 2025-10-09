@@ -1,42 +1,176 @@
 import { motion } from 'framer-motion';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, Activity, Sparkles, BarChart3 } from 'lucide-react';
 
 const LoadingState = () => {
+  const loadingSteps = [
+    { icon: Activity, text: "Connecting to markets...", delay: 0 },
+    { icon: TrendingUp, text: "Analyzing financial data...", delay: 0.5 },
+    { icon: Sparkles, text: "Enhancing with AI...", delay: 1 },
+    { icon: BarChart3, text: "Preparing insights...", delay: 1.5 }
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="text-center"
-      >
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center relative overflow-hidden">
+      {/* Background Animation */}
+      <div className="absolute inset-0 opacity-30">
         <motion.div
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="bg-gradient-to-r from-primary-500 to-secondary-500 p-4 rounded-full mx-auto mb-6"
+          animate={{
+            x: [0, 100, 0],
+            y: [0, -100, 0],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute top-10 left-10 w-4 h-4 bg-blue-300 rounded-full"
+        />
+        <motion.div
+          animate={{
+            x: [0, -150, 0],
+            y: [0, 100, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute top-20 right-20 w-6 h-6 bg-purple-300 rounded-full"
+        />
+        <motion.div
+          animate={{
+            x: [0, 200, 0],
+            y: [0, -50, 0],
+          }}
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-20 left-1/4 w-3 h-3 bg-green-300 rounded-full"
+        />
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center relative z-10 max-w-md mx-auto px-6"
+      >
+        {/* Main Logo Animation */}
+        <motion.div
+          className="relative mb-8"
         >
-          <TrendingUp className="text-white" size={48} />
+          <motion.div
+            animate={{ 
+              rotate: [0, 360],
+              scale: [1, 1.1, 1]
+            }}
+            transition={{ 
+              rotate: { duration: 3, repeat: Infinity, ease: "linear" },
+              scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+            }}
+            className="w-20 h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-2xl"
+          >
+            <TrendingUp className="text-white" size={40} />
+          </motion.div>
+          
+          {/* Pulse Rings */}
+          {[1, 2, 3].map((ring) => (
+            <motion.div
+              key={ring}
+              animate={{
+                scale: [1, 2, 1],
+                opacity: [0.6, 0, 0.6]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                delay: ring * 0.4
+              }}
+              className="absolute inset-0 border-2 border-blue-400 rounded-2xl"
+            />
+          ))}
         </motion.div>
         
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading Trendboard</h2>
-        <p className="text-gray-600 mb-6">Fetching latest financial news and market insights...</p>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-4xl font-bold text-gray-900 mb-3"
+        >
+          Trendboard
+        </motion.h1>
         
-        <div className="flex justify-center space-x-1">
-          {[0, 1, 2].map((i) => (
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="text-gray-600 text-lg mb-8"
+        >
+          AI-Powered Financial Intelligence
+        </motion.p>
+
+        {/* Loading Steps */}
+        <div className="space-y-4 mb-8">
+          {loadingSteps.map((step, index) => {
+            const StepIcon = step.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: step.delay }}
+                className="flex items-center justify-center space-x-3"
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: [0, 360],
+                    scale: [1, 1.2, 1]
+                  }}
+                  transition={{ 
+                    duration: 2, 
+                    repeat: Infinity,
+                    delay: step.delay
+                  }}
+                  className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg flex items-center justify-center"
+                >
+                  <StepIcon size={16} className="text-white" />
+                </motion.div>
+                <span className="text-gray-700 font-medium">{step.text}</span>
+              </motion.div>
+            );
+          })}
+        </div>
+        
+        {/* Progress Bar */}
+        <div className="w-full bg-gray-200 rounded-full h-2 mb-6 overflow-hidden">
+          <motion.div
+            animate={{ width: ["0%", "100%"] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+          />
+        </div>
+
+        {/* Animated Dots */}
+        <div className="flex justify-center space-x-2">
+          {[0, 1, 2, 3, 4].map((i) => (
             <motion.div
               key={i}
               animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5]
+                scale: [1, 1.5, 1],
+                opacity: [0.4, 1, 0.4],
+                backgroundColor: [
+                  "rgb(59, 130, 246)", 
+                  "rgb(139, 92, 246)", 
+                  "rgb(59, 130, 246)"
+                ]
               }}
               transition={{
-                duration: 1,
+                duration: 1.5,
                 repeat: Infinity,
-                delay: i * 0.2
+                delay: i * 0.1
               }}
-              className="w-3 h-3 bg-primary-500 rounded-full"
+              className="w-2 h-2 rounded-full"
             />
           ))}
         </div>
+
+        {/* Loading Text Animation */}
+        <motion.p
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="mt-4 text-sm text-gray-500"
+        >
+          Please wait while we prepare your dashboard...
+        </motion.p>
       </motion.div>
     </div>
   );
