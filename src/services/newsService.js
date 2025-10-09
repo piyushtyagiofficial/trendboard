@@ -2,7 +2,6 @@
 export class NewsService {
   constructor() {
     this.finnhubApiKey = import.meta.env.VITE_FINNHUB_API_KEY; 
-    this.eodhdApiKey = import.meta.env.VITE_EOTHD_API_KEY;
     this.lastFetchTime = null;
     this.rateLimitDelay = 1000; // 1 second between requests
     this.lastRequestTime = 0;
@@ -64,31 +63,11 @@ export class NewsService {
     }
   }
 
-  async fetchIPOAlerts() {
-    // IPO data would come from actual IPOAlerts API when available
-    console.log('IPO API not implemented yet');
-    return [];
-  }
-
-  async fetchBSENSEFilings() {
-    // BSE/NSE filing data would come from actual API when available
-    console.log('BSE/NSE filing API not implemented yet');
-    return [];
-  }
-
   async fetchAllNews() {
     try {
-      const [generalNews, ipoNews, filings] = await Promise.all([
-        this.fetchFinnhubNews('general'),
-        this.fetchIPOAlerts(),
-        this.fetchBSENSEFilings()
-      ]);
+      const generalNews = await this.fetchFinnhubNews('general');
 
-      const allNews = [
-        ...generalNews,
-        ...ipoNews,
-        ...filings
-      ].sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+      const allNews = [...generalNews].sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
 
       this.lastFetchTime = new Date();
       return allNews;
