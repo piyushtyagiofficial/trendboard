@@ -48,30 +48,30 @@ const SearchFilter = ({ onSearch, onFilter, searchTerm, selectedCategory, catego
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl shadow-xl p-6 mb-8 border border-gray-100"
+      className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8 border border-gray-100"
     >
-      <div className="flex flex-col lg:flex-row gap-4">
+      <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
         {/* Enhanced Search Input */}
         <div className="relative flex-1">
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-            <Search size={20} />
+          <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+            <Search size={18} className="sm:w-5 sm:h-5" />
           </div>
           <motion.input
-            whileFocus={{ scale: 1.02 }}
+            whileFocus={{ scale: 1.01 }}
             type="text"
             value={searchTerm}
             onChange={handleSearchChange}
-            placeholder="Search financial news, companies, tickers..."
-            className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500 bg-gray-50 focus:bg-white"
+            placeholder="Search news, companies..."
+            className="w-full pl-10 sm:pl-12 pr-10 sm:pr-4 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500 bg-gray-50 focus:bg-white text-sm sm:text-base"
           />
           {searchTerm && (
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               onClick={() => onSearch('')}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
             >
-              <X size={20} />
+              <X size={18} className="sm:w-5 sm:h-5" />
             </motion.button>
           )}
         </div>
@@ -79,17 +79,17 @@ const SearchFilter = ({ onSearch, onFilter, searchTerm, selectedCategory, catego
         {/* Enhanced Filter Toggle */}
         <div className="relative">
           <motion.button
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className={`flex items-center px-6 py-4 rounded-xl transition-all duration-200 font-medium min-w-[200px] ${
+            className={`flex items-center px-4 sm:px-6 py-3 sm:py-4 rounded-xl transition-all duration-200 font-medium w-full sm:min-w-[200px] text-sm sm:text-base ${
               selectedCategory !== 'all' 
                 ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' 
                 : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
             }`}
           >
-            <Filter size={20} className="mr-3" />
-            <span className="flex-1 text-left">
+            <Filter size={18} className="mr-2 sm:mr-3 sm:w-5 sm:h-5" />
+            <span className="flex-1 text-left truncate">
               {selectedCategory === 'all' ? 'All Categories' : selectedCategory.toUpperCase()}
             </span>
             <motion.div
@@ -111,34 +111,34 @@ const SearchFilter = ({ onSearch, onFilter, searchTerm, selectedCategory, catego
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-20 overflow-hidden"
+                className="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-20 overflow-hidden"
               >
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-gray-900 text-lg">Filter by Category</h3>
+                <div className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <h3 className="font-bold text-gray-900 text-base sm:text-lg">Filter by Category</h3>
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => setIsFilterOpen(false)}
                       className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                      <X size={18} />
+                      <X size={16} className="sm:w-[18px] sm:h-[18px]" />
                     </motion.button>
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 sm:space-y-2">
                     <motion.button
-                      whileHover={{ scale: 1.02 }}
+                      whileHover={{ scale: 1.01 }}
                       onClick={() => handleCategorySelect('all')}
-                      className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center ${
+                      className={`w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition-all duration-200 flex items-center text-sm sm:text-base ${
                         selectedCategory === 'all'
                           ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
                           : 'hover:bg-gray-50 text-gray-700'
                       }`}
                     >
-                      <div className={`w-3 h-3 rounded-full mr-3 ${selectedCategory === 'all' ? 'bg-white' : 'bg-gray-300'}`} />
+                      <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full mr-2.5 sm:mr-3 ${selectedCategory === 'all' ? 'bg-white' : 'bg-gray-300'}`} />
                       <span className="font-medium flex-1">All Categories</span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${
+                      <span className={`text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full ${
                         selectedCategory === 'all' ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600'
                       }`}>
                         {categories.reduce((sum, cat) => sum + cat.count, 0)}
@@ -152,18 +152,18 @@ const SearchFilter = ({ onSearch, onFilter, searchTerm, selectedCategory, catego
                       return (
                         <motion.button
                           key={category.value}
-                          whileHover={{ scale: 1.02 }}
+                          whileHover={{ scale: 1.01 }}
                           onClick={() => handleCategorySelect(category.value)}
-                          className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center ${
+                          className={`w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition-all duration-200 flex items-center text-sm sm:text-base ${
                             isSelected
                               ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
                               : 'hover:bg-gray-50 text-gray-700'
                           }`}
                         >
-                          <div className={`w-3 h-3 rounded-full mr-3 ${isSelected ? 'bg-white' : getCategoryColor(category.value)}`} />
-                          <CategoryIcon size={16} className="mr-2" />
+                          <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full mr-2.5 sm:mr-3 ${isSelected ? 'bg-white' : getCategoryColor(category.value)}`} />
+                          <CategoryIcon size={14} className="mr-1.5 sm:mr-2 sm:w-4 sm:h-4" />
                           <span className="font-medium flex-1 capitalize">{category.label}</span>
-                          <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                          <span className={`text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full font-semibold ${
                             isSelected ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600'
                           }`}>
                             {category.count}
@@ -177,13 +177,13 @@ const SearchFilter = ({ onSearch, onFilter, searchTerm, selectedCategory, catego
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mt-6 pt-4 border-t border-gray-200"
+                      className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200"
                     >
                       <motion.button
-                        whileHover={{ scale: 1.02 }}
+                        whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={clearFilters}
-                        className="w-full py-3 text-center text-red-600 hover:text-red-700 font-medium bg-red-50 hover:bg-red-100 rounded-xl transition-all duration-200"
+                        className="w-full py-2.5 sm:py-3 text-center text-red-600 hover:text-red-700 font-medium bg-red-50 hover:bg-red-100 rounded-xl transition-all duration-200 text-sm sm:text-base"
                       >
                         Clear All Filters
                       </motion.button>
@@ -203,23 +203,23 @@ const SearchFilter = ({ onSearch, onFilter, searchTerm, selectedCategory, catego
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex flex-wrap gap-3 mt-6 pt-4 border-t border-gray-200"
+            className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200"
           >
-            <span className="text-sm text-gray-600 font-medium">Active filters:</span>
+            <span className="text-xs sm:text-sm text-gray-600 font-medium">Active filters:</span>
             {searchTerm && (
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 text-sm px-4 py-2 rounded-full font-medium"
+                className="inline-flex items-center bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium"
               >
-                <Search size={14} className="mr-2" />
-                "{searchTerm}"
+                <Search size={12} className="mr-1.5 sm:mr-2 sm:w-[14px] sm:h-[14px]" />
+                <span className="truncate max-w-[100px] sm:max-w-none">"{searchTerm}"</span>
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   onClick={() => onSearch('')}
-                  className="ml-2 text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-200 transition-colors"
+                  className="ml-1.5 sm:ml-2 text-blue-600 hover:text-blue-800 p-0.5 sm:p-1 rounded-full hover:bg-blue-200 transition-colors"
                 >
-                  <X size={12} />
+                  <X size={10} className="sm:w-3 sm:h-3" />
                 </motion.button>
               </motion.span>
             )}
@@ -227,16 +227,16 @@ const SearchFilter = ({ onSearch, onFilter, searchTerm, selectedCategory, catego
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 text-sm px-4 py-2 rounded-full font-medium"
+                className="inline-flex items-center bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium"
               >
-                <Filter size={14} className="mr-2" />
+                <Filter size={12} className="mr-1.5 sm:mr-2 sm:w-[14px] sm:h-[14px]" />
                 {selectedCategory.toUpperCase()}
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   onClick={() => onFilter('all')}
-                  className="ml-2 text-purple-600 hover:text-purple-800 p-1 rounded-full hover:bg-purple-200 transition-colors"
+                  className="ml-1.5 sm:ml-2 text-purple-600 hover:text-purple-800 p-0.5 sm:p-1 rounded-full hover:bg-purple-200 transition-colors"
                 >
-                  <X size={12} />
+                  <X size={10} className="sm:w-3 sm:h-3" />
                 </motion.button>
               </motion.span>
             )}

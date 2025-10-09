@@ -145,7 +145,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
         <Header 
           onRefresh={refreshData}
           isLoading={isRefreshing}
@@ -165,17 +165,17 @@ function App() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4"
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-3 sm:gap-4"
         >
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-gray-700 font-semibold text-lg">
+            <span className="text-gray-700 font-semibold text-base sm:text-lg">
               {filteredArticles.length} {filteredArticles.length === 1 ? 'article' : 'articles'} found
             </span>
             {searchTerm && (
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full font-medium"
+                className="bg-blue-100 text-blue-800 text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full font-medium"
               >
                 for "{searchTerm}"
               </motion.span>
@@ -191,19 +191,20 @@ function App() {
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setShowCharts(!showCharts)}
-              className={`flex items-center px-4 py-2.5 rounded-xl font-medium transition-all duration-200 ${
+              className={`flex items-center px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-medium transition-all duration-200 text-sm sm:text-base ${
                 showCharts
                   ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
               }`}
             >
-              <BarChart3 size={18} className="mr-2" />
-              {showCharts ? 'Hide Charts' : 'Show Charts'}
+              <BarChart3 size={16} className="mr-1.5 sm:mr-2 sm:w-[18px] sm:h-[18px]" />
+              <span className="hidden sm:inline">{showCharts ? 'Hide Charts' : 'Show Charts'}</span>
+              <span className="sm:hidden">{showCharts ? 'Charts' : 'Charts'}</span>
             </motion.button>
 
             <div className="flex bg-white rounded-xl p-1 shadow-md border border-gray-200">
@@ -211,25 +212,25 @@ function App() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setViewMode('grid')}
-                className={`p-2.5 rounded-lg transition-all duration-200 ${
+                className={`p-2 sm:p-2.5 rounded-lg transition-all duration-200 ${
                   viewMode === 'grid'
                     ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
               >
-                <Grid size={18} />
+                <Grid size={16} className="sm:w-[18px] sm:h-[18px]" />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setViewMode('list')}
-                className={`p-2.5 rounded-lg transition-all duration-200 ${
+                className={`p-2 sm:p-2.5 rounded-lg transition-all duration-200 ${
                   viewMode === 'list'
                     ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
               >
-                <List size={18} />
+                <List size={16} className="sm:w-[18px] sm:h-[18px]" />
               </motion.button>
             </div>
           </div>
@@ -276,9 +277,9 @@ function App() {
               key="no-results"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-20"
+              className="text-center py-12 sm:py-20 px-4"
             >
-              <div className="bg-white rounded-2xl shadow-xl p-12 max-w-lg mx-auto border border-gray-100">
+              <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-12 max-w-sm sm:max-w-lg mx-auto border border-gray-100">
                 <motion.div
                   animate={{ 
                     rotate: [0, 10, -10, 0],
@@ -289,20 +290,20 @@ function App() {
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
-                  className="text-gray-300 mb-6"
+                  className="text-gray-300 mb-4 sm:mb-6"
                 >
-                  <BarChart3 size={80} className="mx-auto" />
+                  <BarChart3 size={64} className="mx-auto sm:w-20 sm:h-20" />
                 </motion.div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
                   No articles found
                 </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <p className="text-gray-600 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                   {searchTerm || selectedCategory !== 'all' 
                     ? "Try adjusting your search terms or category filters to find relevant financial news."
                     : "No financial news available at the moment. Try refreshing the page or check back later."
                   }
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
                   {(searchTerm || selectedCategory !== 'all') && (
                     <motion.button
                       whileHover={{ scale: 1.02 }}
@@ -311,7 +312,7 @@ function App() {
                         setSearchTerm('');
                         setSelectedCategory('all');
                       }}
-                      className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-medium shadow-lg"
+                      className="px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-medium shadow-lg text-sm sm:text-base"
                     >
                       Clear All Filters
                     </motion.button>
@@ -321,7 +322,7 @@ function App() {
                     whileTap={{ scale: 0.98 }}
                     onClick={refreshData}
                     disabled={isRefreshing}
-                    className="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium disabled:opacity-50"
+                    className="px-4 py-2.5 sm:px-6 sm:py-3 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium disabled:opacity-50 text-sm sm:text-base"
                   >
                     {isRefreshing ? 'Refreshing...' : 'Refresh News'}
                   </motion.button>

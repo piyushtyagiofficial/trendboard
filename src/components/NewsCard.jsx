@@ -91,7 +91,7 @@ const NewsCard = ({ article, index }) => {
     >
       <div className="relative flex-shrink-0">
         {article.image && (
-          <div className="relative overflow-hidden h-48">
+          <div className="relative overflow-hidden h-36 sm:h-44 md:h-48">
             <img
               src={article.image}
               alt={article.headline}
@@ -106,19 +106,20 @@ const NewsCard = ({ article, index }) => {
         )}
         
         {/* Category Badge */}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-2 sm:top-4 right-2 sm:right-4">
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold ${categoryConfig.bg} ${categoryConfig.text} shadow-lg backdrop-blur-sm`}
+            className={`inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-semibold ${categoryConfig.bg} ${categoryConfig.text} shadow-lg backdrop-blur-sm`}
           >
-            <CategoryIcon size={12} className="mr-1.5" />
-            {article.category?.toUpperCase() || 'NEWS'}
+            <CategoryIcon size={10} className="mr-1 sm:mr-1.5 sm:w-3 sm:h-3" />
+            <span className="hidden sm:inline">{article.category?.toUpperCase() || 'NEWS'}</span>
+            <span className="sm:hidden">{(article.category || 'NEWS').substring(0, 3).toUpperCase()}</span>
           </motion.div>
         </div>
 
         {/* AI Badge */}
         {article.aiSummarized && (
-          <div className="absolute top-4 left-4">
+          <div className="absolute top-2 sm:top-4 left-2 sm:left-4">
             <motion.div
               animate={{ 
                 boxShadow: [
@@ -128,48 +129,46 @@ const NewsCard = ({ article, index }) => {
                 ]
               }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+              className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
             >
-              <Sparkles size={12} className="mr-1.5" />
-              AI Enhanced
+              <Sparkles size={10} className="mr-1 sm:mr-1.5 sm:w-3 sm:h-3" />
+              <span className="hidden sm:inline">AI Enhanced</span>
+              <span className="sm:hidden">AI</span>
             </motion.div>
           </div>
         )}
       </div>
 
-      <div className="p-6 flex-1 flex flex-col">
+      <div className="p-4 sm:p-6 flex-1 flex flex-col">
         {/* Source and Time */}
-        <div className="flex items-center justify-between mb-4 flex-shrink-0">
+        <div className="flex items-center justify-between mb-3 sm:mb-4 flex-shrink-0">
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg">
+            <span className="text-xs sm:text-sm font-semibold text-blue-600 bg-blue-50 px-2 py-1 sm:px-3 sm:py-1 rounded-lg truncate max-w-[80px] sm:max-w-none">
               {article.source}
             </span>
           </div>
-          <div className="flex items-center text-gray-500 text-sm bg-gray-50 px-3 py-1 rounded-lg">
-            <Clock size={14} className="mr-1.5" />
-            {formatTimeAgo(article.datetime)}
+          <div className="flex items-center text-gray-500 text-xs sm:text-sm bg-gray-50 px-2 py-1 sm:px-3 sm:py-1 rounded-lg">
+            <Clock size={12} className="mr-1 sm:mr-1.5 sm:w-[14px] sm:h-[14px]" />
+            <span className="whitespace-nowrap">{formatTimeAgo(article.datetime)}</span>
           </div>
         </div>
 
         {/* Headline */}
-        <h3 className="font-bold text-xl mb-3 text-gray-900 group-hover:text-blue-600 transition-colors duration-200 leading-tight">
+        <h3 className="font-bold text-lg sm:text-xl mb-2 sm:mb-3 text-gray-900 group-hover:text-blue-600 transition-colors duration-200 leading-tight">
           {article.headline}
         </h3>
 
         {/* Summary - Flexible height container */}
-        <div className="mb-4 flex-grow">
+        <div className="mb-3 sm:mb-4 flex-grow">
           <motion.div 
-            className="overflow-hidden"
-            animate={{ 
-              height: showFullSummary || !isLongSummary ? 'auto' : '4.5rem' 
-            }}
+            className={`overflow-hidden ${showFullSummary || !isLongSummary ? '' : 'line-clamp-3'}`}
+            layout
             transition={{ 
-              duration: 0.5, 
-              ease: [0.4, 0, 0.2, 1],
-              type: "tween"
+              duration: 0.4, 
+              ease: [0.4, 0, 0.2, 1]
             }}
           >
-            <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-wrap">
+            <p className="text-gray-600 leading-relaxed text-sm sm:text-sm whitespace-pre-wrap">
               {article.summary}
             </p>
           </motion.div>
@@ -177,18 +176,20 @@ const NewsCard = ({ article, index }) => {
           {isLongSummary && (
             <motion.button
               whileHover={{ 
-                scale: 1.02, 
-                backgroundColor: '#f8fafc',
-                borderColor: '#3b82f6'
+                scale: 1.02,
+                backgroundColor: '#eff6ff'
               }}
               whileTap={{ scale: 0.98 }}
               onClick={(e) => {
                 e.stopPropagation();
                 setShowFullSummary(!showFullSummary);
               }}
-              className="mt-3 inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200"
+              className="mt-2 sm:mt-3 group flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium transition-all duration-300 rounded-lg px-2 py-1 hover:bg-blue-50"
             >
-              <motion.span
+              <span className="mr-1">
+                {showFullSummary ? 'Show less' : 'Read more'}
+              </span>
+              <motion.div
                 animate={{ 
                   rotate: showFullSummary ? 180 : 0 
                 }}
@@ -198,36 +199,29 @@ const NewsCard = ({ article, index }) => {
                 }}
                 className="flex items-center"
               >
-                {showFullSummary ? 'Show Less' : 'Read More'}
-                <motion.div className="ml-1">
-                  {showFullSummary ? (
-                    <ChevronUp size={16} />
-                  ) : (
-                    <ChevronDown size={16} />
-                  )}
-                </motion.div>
-              </motion.span>
+                <ChevronDown size={14} className="sm:w-4 sm:h-4" />
+              </motion.div>
             </motion.button>
           )}
         </div>
 
         {/* Symbols/Tags */}
         {article.symbols && article.symbols.length > 0 && (
-          <div className="flex items-center mb-4">
-            <Tag size={14} className="mr-2 text-gray-400" />
-            <div className="flex flex-wrap gap-2">
-              {article.symbols.slice(0, 3).map((symbol, idx) => (
+          <div className="flex items-center mb-3 sm:mb-4">
+            <Tag size={12} className="mr-1.5 sm:mr-2 text-gray-400 sm:w-[14px] sm:h-[14px]" />
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              {article.symbols.slice(0, 2).map((symbol, idx) => (
                 <motion.span
                   key={idx}
                   whileHover={{ scale: 1.05 }}
-                  className="inline-block bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 text-xs px-3 py-1.5 rounded-full font-medium hover:from-blue-100 hover:to-blue-200 hover:text-blue-700 transition-all duration-200"
+                  className="inline-block bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 text-xs px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-medium hover:from-blue-100 hover:to-blue-200 hover:text-blue-700 transition-all duration-200"
                 >
                   {symbol}
                 </motion.span>
               ))}
-              {article.symbols.length > 3 && (
-                <span className="inline-block bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full font-medium">
-                  +{article.symbols.length - 3}
+              {article.symbols.length > 2 && (
+                <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-medium">
+                  +{article.symbols.length - 2}
                 </span>
               )}
             </div>
@@ -235,21 +229,22 @@ const NewsCard = ({ article, index }) => {
         )}
 
         {/* Footer - Always at bottom */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-3 sm:pt-4 border-t border-gray-100 mt-auto space-y-2 sm:space-y-0">
           <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">
             {article.provider}
           </span>
           {article.url && article.url !== '#' && (
             <motion.a
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.95 }}
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
+              className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-medium text-xs sm:text-sm hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg w-full sm:w-auto justify-center sm:justify-start"
             >
-              Read Full Story
-              <ExternalLink size={14} className="ml-2" />
+              <span className="sm:hidden">Read Story</span>
+              <span className="hidden sm:inline">Read Full Story</span>
+              <ExternalLink size={12} className="ml-1.5 sm:ml-2 sm:w-[14px] sm:h-[14px]" />
             </motion.a>
           )}
         </div>
