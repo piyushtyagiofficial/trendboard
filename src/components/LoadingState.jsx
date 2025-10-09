@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { TrendingUp, Activity, Sparkles, BarChart3 } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const LoadingState = () => {
   const loadingSteps = [
@@ -50,16 +51,18 @@ const LoadingState = () => {
         >
           <motion.div
             animate={{ 
-              rotate: [0, 360],
               scale: [1, 1.1, 1]
             }}
             transition={{ 
-              rotate: { duration: 3, repeat: Infinity, ease: "linear" },
               scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
             }}
-            className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-2xl"
+            className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-2xl p-2 sm:p-3"
           >
-            <TrendingUp className="text-white" size={32} />
+            <img 
+              src={logo} 
+              alt="Trendboard Logo" 
+              className="w-full h-full object-contain"
+            />
           </motion.div>
           
           {/* Pulse Rings */}

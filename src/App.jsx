@@ -9,6 +9,7 @@ import { newsService } from './services/newsService';
 import { firestoreService } from './services/firestoreService';
 import { aiService } from './services/aiService';
 import ChartVisualization from './components/ChartVisualization';
+import logo from './assets/logo.png';
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -144,21 +145,23 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-14 lg:pt-16 pb-4 sm:pb-6 max-w-7xl">
         <Header 
           onRefresh={refreshData}
           isLoading={isRefreshing}
           lastUpdateTime={lastUpdateTime}
         />
 
-        <SearchFilter
-          onSearch={setSearchTerm}
-          onFilter={setSelectedCategory}
-          searchTerm={searchTerm}
-          selectedCategory={selectedCategory}
-          categories={getCategories()}
-        />
+        <div className="mt-6 sm:mt-8 lg:mt-10">
+          <SearchFilter
+            onSearch={setSearchTerm}
+            onFilter={setSelectedCategory}
+            searchTerm={searchTerm}
+            selectedCategory={selectedCategory}
+            categories={getCategories()}
+          />
+        </div>
 
 
         {/* View Controls */}
@@ -341,13 +344,11 @@ function App() {
         >
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3"
-              >
-                <TrendingUp size={16} className="text-white" />
-              </motion.div>
+              <img
+                src={logo}
+                alt="Trendboard Logo"
+                className="w-8 h-8 object-contain mr-3"
+              />
               <h3 className="text-xl font-bold text-gray-900">Trendboard</h3>
             </div>
             <p className="text-gray-600 mb-4">

@@ -1,83 +1,96 @@
 import { motion } from 'framer-motion';
-import { TrendingUp, RefreshCw, Activity, Clock, Sparkles, Globe, Zap } from 'lucide-react';
+import { RefreshCw, Clock } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const Header = ({ onRefresh, isLoading, lastUpdateTime }) => {
   const formatLastUpdate = (timestamp) => {
-    if (!timestamp) return 'Never';
+    if (!timestamp) return { text: 'Just Now', status: 'live' };
+    
     const now = new Date();
     const diff = now - timestamp;
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
+    const seconds = Math.floor(diff / 1000);
     
-    if (minutes < 1) return 'Just now';
-    if (minutes < 60) return `${minutes}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    return timestamp.toLocaleDateString();
+    if (seconds < 30) return { text: 'Just updated', status: 'live' };
+    if (minutes < 1) return { text: `${seconds}s ago`, status: 'live' };
+    if (minutes < 5) return { text: `${minutes}m ago`, status: 'recent' };
+    if (minutes < 60) return { text: `${minutes}m ago`, status: 'normal' };
+    if (hours < 24) return { text: `${hours}h ago`, status: 'old' };
+    return { text: timestamp.toLocaleDateString(), status: 'very-old' };
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 overflow-hidden mb-8 rounded-2xl shadow-2xl"
+      className="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg border-b border-gray-200 backdrop-blur-sm"
     >
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/20 to-transparent"></div>
-        <svg className="absolute top-0 right-0 w-64 h-64 opacity-30" viewBox="0 0 100 100">
-          <circle cx="20" cy="20" r="2" fill="currentColor" className="animate-pulse" />
-          <circle cx="80" cy="30" r="1.5" fill="currentColor" className="animate-ping" />
-          <circle cx="40" cy="70" r="1" fill="currentColor" className="animate-pulse" />
-          <circle cx="90" cy="80" r="2.5" fill="currentColor" className="animate-ping" />
-        </svg>
-      </div>
-
-      <div className="relative px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+      <div className="relative px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
+        <div className="flex items-center justify-between">
           {/* Brand Section */}
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center"
-            >
-              <TrendingUp size={20} className="text-white sm:w-6 sm:h-6" />
-            </motion.div>
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <motion.img
+              whileHover={{ scale: 1.05 }}
+              onClick={scrollToTop}
+              src={logo} 
+              alt="Trendboard Logo" 
+              className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 object-contain cursor-pointer transition-all duration-300"
+            />
             
             <div>
               <motion.h1
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white"
+                className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900"
               >
                 Trendboard
               </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-blue-100 text-xs sm:text-sm lg:text-base flex items-center mt-1"
-              >
-                <Sparkles size={14} className="mr-1.5 sm:mr-2 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">AI-Powered Financial Intelligence</span>
-                <span className="sm:hidden">AI Financial News</span>
-              </motion.p>
             </div>
           </div>
 
           {/* Actions Section */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 lg:space-x-6">
-            {/* Last Update Info */}
+          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
+            {/* Enhanced Real-time Update Info */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="flex items-center text-blue-100"
+              className="hidden sm:flex items-center"
             >
-              <Clock size={14} className="mr-1.5 sm:mr-2 sm:w-4 sm:h-4" />
-              <span className="text-xs sm:text-sm">
-                Updated {formatLastUpdate(lastUpdateTime)}
-              </span>
+              {(() => {
+                const updateInfo = formatLastUpdate(lastUpdateTime);
+                const statusColors = {
+                  live: 'text-green-600',
+                  recent: 'text-blue-600', 
+                  normal: 'text-gray-600',
+                  old: 'text-orange-600',
+                  'very-old': 'text-red-600',
+                  offline: 'text-gray-400'
+                };
+                return (
+                  <>
+                    <div className={`w-2 h-2 rounded-full mr-2 ${
+                      updateInfo.status === 'live' ? 'bg-green-500 animate-pulse' :
+                      updateInfo.status === 'recent' ? 'bg-blue-500' :
+                      updateInfo.status === 'normal' ? 'bg-gray-500' :
+                      updateInfo.status === 'old' ? 'bg-orange-500' :
+                      'bg-red-500'
+                    }`} />
+                    <span className={`text-xs lg:text-sm font-medium ${statusColors[updateInfo.status]}`}>
+                      Updated {updateInfo.text}
+                    </span>
+                  </>
+                );
+              })()}
             </motion.div>
 
             {/* Refresh Button */}
@@ -86,60 +99,17 @@ const Header = ({ onRefresh, isLoading, lastUpdateTime }) => {
               whileTap={{ scale: 0.95 }}
               onClick={onRefresh}
               disabled={isLoading}
-              className="flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-white/20 backdrop-blur-sm text-white rounded-xl font-medium hover:bg-white/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-white/20 text-sm sm:text-base"
+              className="flex items-center px-2 py-1.5 sm:px-3 sm:py-2 lg:px-4 lg:py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm text-xs sm:text-sm lg:text-base"
             >
               <RefreshCw 
-                size={16} 
-                className={`mr-1.5 sm:mr-2 sm:w-[18px] sm:h-[18px] ${isLoading ? 'animate-spin' : ''}`} 
+                size={14} 
+                className={`mr-1 sm:mr-1.5 lg:w-4 lg:h-4 ${isLoading ? 'animate-spin' : ''}`} 
               />
               <span className="hidden sm:inline">{isLoading ? 'Refreshing...' : 'Refresh'}</span>
-              <span className="sm:hidden">{isLoading ? 'Loading...' : 'Sync'}</span>
+              <span className="sm:hidden">{isLoading ? '...' : 'Sync'}</span>
             </motion.button>
           </div>
         </div>
-
-        {/* Stats Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-white/20"
-        >
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1 sm:mb-2">
-                <Activity size={16} className="text-white sm:w-5 sm:h-5" />
-              </div>
-              <div className="text-sm sm:text-lg font-bold text-white">Live</div>
-              <div className="text-blue-200 text-xs sm:text-sm">Market Data</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1 sm:mb-2">
-                <Zap size={16} className="text-white sm:w-5 sm:h-5" />
-              </div>
-              <div className="text-sm sm:text-lg font-bold text-white">AI</div>
-              <div className="text-blue-200 text-xs sm:text-sm">Enhanced</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1 sm:mb-2">
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 rounded-full"
-                />
-              </div>
-              <div className="text-sm sm:text-lg font-bold text-white">Real-time</div>
-              <div className="text-blue-200 text-xs sm:text-sm">Updates</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1 sm:mb-2">
-                <Globe size={16} className="text-white sm:w-5 sm:h-5" />
-              </div>
-              <div className="text-sm sm:text-lg font-bold text-white">Global</div>
-              <div className="text-blue-200 text-xs sm:text-sm">Coverage</div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </motion.header>
   );
