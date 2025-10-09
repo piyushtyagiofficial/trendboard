@@ -43,7 +43,7 @@ export class NewsService {
       }
       
       const data = await response.json();
-      const processedData = data.slice(0, 10).map(article => ({
+      const processedData = data.slice(0, 25).map(article => ({
         id: article.id || Date.now() + Math.random(),
         headline: article.headline,
         summary: article.summary || '',
