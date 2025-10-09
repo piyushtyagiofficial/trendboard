@@ -1,18 +1,30 @@
 import { motion } from 'framer-motion';
 import { RefreshCw, Clock } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 
 const Header = ({ onRefresh, isLoading, lastUpdateTime }) => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Update current time every second for real-time display
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const formatLastUpdate = (timestamp) => {
     if (!timestamp) return { text: 'Just Now', status: 'live' };
     
-    const now = new Date();
+    const now = currentTime; // Use the live current time
     const diff = now - timestamp;
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const seconds = Math.floor(diff / 1000);
     
-    if (seconds < 30) return { text: 'Just updated', status: 'live' };
+    if (seconds < 30) return { text: 'Just Now', status: 'live' };
     if (minutes < 1) return { text: `${seconds}s ago`, status: 'live' };
     if (minutes < 5) return { text: `${minutes}m ago`, status: 'recent' };
     if (minutes < 60) return { text: `${minutes}m ago`, status: 'normal' };
