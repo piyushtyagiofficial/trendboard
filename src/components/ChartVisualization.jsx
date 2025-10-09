@@ -67,9 +67,9 @@ const ChartVisualization = ({ articles }) => {
       crypto: '#f59e0b',
       commodities: '#f97316',
       monetary: '#ef4444',
-      general: '#6b7280'
+      general: '#ef4444'
     };
-    return colors[category] || '#6b7280';
+    return colors[category] || '#f59e0b';
   }
 
   const CustomTooltip = ({ active, payload, label }) => {
